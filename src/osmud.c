@@ -34,6 +34,7 @@
 #include "version.h"
 #include "sniffer.h"
 #include "dns_rules.h"
+#include "policy_violation.h"
 
 #define MAXLINE 1024
 
