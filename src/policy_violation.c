@@ -109,7 +109,9 @@ static void *pol_violation_thread_func(void *arg)
         else if (retval && FD_ISSET(syslog_fd, &rfds))
         {
             logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, "nfds read: %d", retval);
-            if (osm_read_line(syslog_line, MAX_SYSLOG_LINE, syslog_fd) > 1)
+            retval = osm_read_line(syslog_line, MAX_SYSLOG_LINE, syslog_fd);
+            logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, "readline len: %d", retval);
+            if (ret > 1)
             {
                 logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, "syslog line available");
                 logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, syslog_line);
