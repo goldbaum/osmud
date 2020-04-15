@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "policy_violation.h"
@@ -30,7 +31,7 @@ bool policy_violation_init(const char *syslog_path)
         goto err0;
     }
 
-    syslog_fd = g_open(syslog_path, 0, O_RDONLY)
+    syslog_fd = g_open(syslog_path, 0, O_RDONLY);
     if (-1 == syslog_fd)
     {
         logOmsGeneralMessage(OMS_ERROR, OMS_SUBSYS_POL_VIOLATION, "Failed opening system log file (%s)", syslog_path);
