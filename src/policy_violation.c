@@ -77,7 +77,7 @@ static void process_syslog_line(const char *syslog_line)
     char *dropped_evt;
 
     /* check if the line contains a dropped connection to wan */
-    dropped_evt = g_strstr(syslog_line, DROPPED_CONNECTION_INDICATOR);
+    dropped_evt = g_strrstr(syslog_line, DROPPED_CONNECTION_INDICATOR);
     if (NULL == dropped_evt)
         return;
 
