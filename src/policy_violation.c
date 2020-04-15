@@ -101,14 +101,14 @@ static void *pol_violation_thread_func(void *arg)
 
     while (true)
     {
-        retval = select(syslog_fd+1, &rfds, NULL, NULL, &tv);
+        retval = select(syslog_fd + 1, &rfds, NULL, NULL, &tv);
         if (retval == -1)
         {
             perror("select()");
         }
-        else if (retval && FD_ISSET(filed, &rfds))
+        else if (retval && FD_ISSET(syslog_fd, &rfds))
         {
-            if ((osm_read_line(syslog_line, MAXLINE, filed)) > 1)
+            if ((osm_read_line(syslog_line, MAX_SYSLOG_LINE, filed)) > 1)
             {
                 logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, "syslog line available");
                 logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, syslog_line);
