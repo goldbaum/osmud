@@ -46,3 +46,29 @@ char *osm_strndup(const char *s, size_t n)
     }
     return p;
 }
+
+
+int osm_read_line(char *buffer, int maxLineLength, int fd)
+{
+    int bytes_read;
+    int k = 0;
+    int fDone = 0;
+    do {
+        char t = 0;
+        bytes_read = read(fd, &t, 1);
+
+        if (t == '\n') {
+            buffer[k]='\0';
+            fDone = 1;
+        }
+        else if (k < maxLineLength) {
+            buffer[k++] = t;
+        } else {
+                // printf("Line too long...");
+                fDone = 1;
+        }
+    }
+    while ((bytes_read != 0) && (!fDone));
+
+    return k;
+}

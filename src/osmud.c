@@ -58,31 +58,6 @@ int heartBeatCycle = 0; /* how many polling cycles have passed in this interval 
 int heartBeatLogInterval = 720; /* Every x cycles, trigger the heartbeat log - 1 hour */
 int sleepTimeout = 5; /* how log to sleep between polling the event file - in seconds */
 
-int
-readLine(char *buffer, int maxLineLength, int fd)
-{
-    int bytes_read;
-    int k = 0;
-    int fDone = 0;
-    do {
-        char t = 0;
-        bytes_read = read(fd, &t, 1);
-
-        if (t == '\n') {
-            buffer[k]='\0';
-            fDone = 1;
-        }
-        else if (k < maxLineLength) {
-            buffer[k++] = t;
-        } else {
-                // printf("Line too long...");
-                fDone = 1;
-        }
-    }
-    while ((bytes_read != 0) && (!fDone));
-
-    return k;
-}
 
 int pollDhcpFile(char *line, int maxLineLength, FD filed)
 {
@@ -108,7 +83,7 @@ int pollDhcpFile(char *line, int maxLineLength, FD filed)
     else if (retval) {
         if (FD_ISSET(filed, &rfds)) /* is true so input is available now. */
         {
-            if ((hhh = readLine(line, MAXLINE, filed)) > 1)
+            if ((hhh = osm_read_line(line, MAXLINE, filed)) > 1)
             {
                 logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_GENERAL, "Data read on device");
                 logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_GENERAL, line);
@@ -333,7 +308,7 @@ int main(int argc, char* argv[])
      * It is expected that this full path and file exist since this is intended
      * to be the output of DHCP events
      */
-    FD filed = open(dhcpEventFile, O_RDONLY );
+    FD filed = open(dhcpEventFile, O_RDONLY);
 
     if (!(filed > 0)) {
             printf("OSMUD could not open the DHCP event file: %s - open failed. Use the \"-e <dhcp-event-file-with-path>\" option to set where the DHCP service is writing events.\n", dhcpEventFile);
@@ -385,6 +360,12 @@ int main(int argc, char* argv[])
     close(STDERR_FILENO);
 
     logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_GENERAL, "Initializing sniffer module");
+
+    if (!policy_violation_init())
+    {
+        logOmsGeneralMessage(OMS_ERROR, OMS_SUBSYS_GENERAL, "Failed to initialize policy violation module");
+        exit(1);
+    }
 
     if (!dns_rules_init())
     {

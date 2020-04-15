@@ -33,5 +33,6 @@ strlcpy(char *dst,        /* O - Destination string */
 
 char *osm_strdup(const char *s);
 char *osm_strndup(const char *s, size_t n);
+int osm_read_line(char *buffer, int maxLineLength, int fd);
 
 #endif /* _COMMON */
