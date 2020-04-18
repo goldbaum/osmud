@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 #include "common.h"
 #include "policy_violation.h"
@@ -68,32 +69,21 @@ static void process_syslog_line(const char *syslog_line)
 
 static void *pol_violation_thread_func(void *arg)
 {
-    fd_set rfds;
-    struct timeval tv;
     int retval;
     int i;
+    int errnum;
     gchar **klog_lines = NULL;
-
-    FD_ZERO(&rfds);
-    FD_SET(syslog_fd, &rfds);
-
-    /* Wait up to five seconds. */
-    tv.tv_sec = 5;
-    tv.tv_usec = 0;
 
     while (true)
     {
         retval = klogctl(SYSLOG_ACTION_READ, klog_buf, KLOG_BUF_SIZE);
-
         if (retval == -1)
         {
-            continue;
+            errnum = errno;
+            logOmsGeneralMessage(OMS_ERROR, OMS_SUBSYS_POL_VIOLATION, "Failed reading kernel log: %s",
+                                 strerror(errnum));
         }
-        else if (retval == 0)
-        {
-            continue;
-        }
-        else
+        else if (retval > 0)
         {
             klog_lines = g_strsplit(klog_buf, "\n", -1);
             for (i = 0; klog_lines[i] != NULL; i++)
