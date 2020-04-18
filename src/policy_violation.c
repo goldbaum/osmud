@@ -10,13 +10,13 @@
 #include "common.h"
 #include "policy_violation.h"
 
-#define MAX_KLOG_LINE (8192)
+#define KLOG_BUF_SIZE (8192)
 #define DROPPED_CONNECTION_INDICATOR "DROP(dest wan)"
 
 bool g_policy_violation_initialized = false;
 static int syslog_fd;
 static pthread_t pol_violation_thread;
-static char klog_line[MAX_SYSLOG_LINE] = {0};
+static char klog_buf[KLOG_BUF_SIZE] = {0};
 
 static bool pol_violation_create_thread(void);
 
@@ -83,7 +83,7 @@ static void *pol_violation_thread_func(void *arg)
 
     while (true)
     {
-        retval = klogctl(2, klog_line, MAX_KLOG_LINE);
+        retval = klogctl(SYSLOG_ACTION_READ, klog_buf, MAX_KLOG_LINE);
 
         if (retval == -1)
         {
@@ -96,7 +96,7 @@ static void *pol_violation_thread_func(void *arg)
         else
         {
             klog_lines = g_strsplit(klog_line, "\n", -1);
-            for (i = i, klog_lines[i] != NULL, i++)
+            for (i = 0; klog_lines[i] != NULL; i++)
             {
                 process_syslog_line(klog_lines[i]);
             }
