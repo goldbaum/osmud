@@ -33,7 +33,7 @@ bool policy_violation_init(const char *syslog_path)
         goto err0;
     }
 
-    syslog_fd = open(syslog_path, O_RDONLY);
+    syslog_fd = open(syslog_path, O_RDONLY | O_NONBLOCK);
     if (-1 == syslog_fd)
     {
         logOmsGeneralMessage(OMS_ERROR, OMS_SUBSYS_POL_VIOLATION, "Failed opening system log file (%s)", syslog_path);
