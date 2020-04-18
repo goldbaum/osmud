@@ -10,7 +10,7 @@
 #include "common.h"
 #include "policy_violation.h"
 
-#define KLOG_BUF_SIZE (8192)
+#define KLOG_BUF_SIZE (16384) /* 16KB */
 #define DROPPED_CONNECTION_INDICATOR "DROP(dest wan)"
 
 bool g_policy_violation_initialized = false;
