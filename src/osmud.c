@@ -362,7 +362,7 @@ int main(int argc, char* argv[])
 
     logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_GENERAL, "Initializing sniffer module");
 
-    if (!policy_violation_init("/var/log/mylog"))
+    if (!policy_violation_init())
     {
         logOmsGeneralMessage(OMS_ERROR, OMS_SUBSYS_GENERAL, "Failed to initialize policy violation module");
         exit(1);
