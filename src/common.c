@@ -57,7 +57,7 @@ int osm_read_line(char *buffer, int maxLineLength, int fd)
     do {
         char t = 0;
         bytes_read = read(fd, &t, 1);
-
+        logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, "actual bytes read: %d", bytes_read);
         if (t == '\n') {
             buffer[k]='\0';
             fDone = 1;
