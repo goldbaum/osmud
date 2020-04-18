@@ -40,11 +40,11 @@ bool policy_violation_init(const char *syslog_path)
         goto err0;
     }
 
-    if (-1 == lseek(syslog_fd, 0, SEEK_END))
+    /*if (-1 == lseek(syslog_fd, 0, SEEK_END))
     {
         logOmsGeneralMessage(OMS_ERROR, OMS_SUBSYS_POL_VIOLATION, "Failed seeking system log file (%s)", syslog_path);
         goto err1;
-    }
+    }*/
 
     if (!pol_violation_create_thread())
         goto err1;
