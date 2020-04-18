@@ -15,7 +15,6 @@
 #define DROPPED_CONNECTION_INDICATOR "DROP(dest wan)"
 
 bool g_policy_violation_initialized = false;
-static int syslog_fd;
 static pthread_t pol_violation_thread;
 static char klog_buf[KLOG_BUF_SIZE] = {0};
 
@@ -29,14 +28,12 @@ bool policy_violation_init(void)
     logOmsGeneralMessage(OMS_DEBUG, OMS_SUBSYS_POL_VIOLATION, "Initializing policy violation module");
 
     if (!pol_violation_create_thread())
-        goto err1;
+        goto out_error;
 
     g_policy_violation_initialized = true;
     return true;
 
-err1:
-    close(syslog_fd);
-err0:
+out_error:
     return false;
 }
 
