@@ -83,7 +83,7 @@ static void *pol_violation_thread_func(void *arg)
 
     while (true)
     {
-        retval = klogctl(SYSLOG_ACTION_READ, klog_buf, MAX_KLOG_LINE);
+        retval = klogctl(SYSLOG_ACTION_READ, klog_buf, KLOG_BUF_SIZE);
 
         if (retval == -1)
         {
@@ -95,7 +95,7 @@ static void *pol_violation_thread_func(void *arg)
         }
         else
         {
-            klog_lines = g_strsplit(klog_line, "\n", -1);
+            klog_lines = g_strsplit(klog_buf, "\n", -1);
             for (i = 0; klog_lines[i] != NULL; i++)
             {
                 process_syslog_line(klog_lines[i]);
